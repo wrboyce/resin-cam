@@ -1,0 +1,15 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-debian:jessie
+
+ENV INITSYSTEM on
+WORKDIR /usr/src/app
+
+RUN apt-get update -qq \
+    && apt-get install -qy nginx fswebcam \
+    && apt-get clean && rm -rf /var/lib/apt-lists/*
+
+COPY nginx.conf /etc/nginx/sites-available/default
+COPY index.html html/
+RUN systemctl enable nginx.service
+
+ADD entry.sh .
+CMD ./entry.sh
